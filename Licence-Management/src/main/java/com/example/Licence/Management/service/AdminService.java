@@ -48,7 +48,7 @@ public class AdminService {
 		return ResponseEntity.ok(decryptLicenseKey);
 	}
 	
-	public ResponseEntity<?> getDecryptDataAndUpdateLicence(EncryptDataDto dataDto) throws Exception {
+	public ResponseEntity<?> getDecryptDataAndUpdateLicenceStatus(EncryptDataDto dataDto) throws Exception {
 		SecretKey key = secretKeyConfig.convertStringToSecretKey(dataDto.getSecretKey());
 	    Object decryptData =secretKeyConfig.decryptObject(dataDto.getEncrptData(), key);
 		

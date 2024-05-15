@@ -1,9 +1,9 @@
-package com.example.Licence.Management.dto;
+package com.example.MainServices.dto;
 
 import java.util.UUID;
 
-import com.example.Licence.Management.enumuration.ExpiredStatus;
-import com.example.Licence.Management.enumuration.Status;
+import com.example.MainServices.enumuration.ExpiredStatus;
+import com.example.MainServices.enumuration.Status;
 
 import lombok.Builder;
 import lombok.Data;

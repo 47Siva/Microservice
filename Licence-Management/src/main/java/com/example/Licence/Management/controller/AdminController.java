@@ -30,8 +30,8 @@ public class AdminController {
 	}
 	
 	@PostMapping("/getdecryptdata")
-	public ResponseEntity<?> decryptDataAndUpdateLicence(@RequestBody EncryptDataDto dataDto) throws Exception{
-		return adminService.getDecryptDataAndUpdateLicence(dataDto);
+	public ResponseEntity<?> decryptDataAndUpdateLicenceStatus(@RequestBody EncryptDataDto dataDto) throws Exception{
+		return adminService.getDecryptDataAndUpdateLicenceStatus(dataDto);
 	}
 	
 	@PutMapping("/updatelicence")

@@ -57,7 +57,10 @@ public class LicenceController {
 	}
 	
 	
-	
+	@GetMapping("/getalllicence")
+	public ResponseEntity<?> getlistLicence(){
+		return licenceService.getAllLicence();
+	}
 
 	
 }

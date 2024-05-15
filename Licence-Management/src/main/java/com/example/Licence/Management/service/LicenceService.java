@@ -3,6 +3,7 @@ package com.example.Licence.Management.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import com.example.Licence.Management.common.LicenceKeyConfig;
 import com.example.Licence.Management.common.SecretKeyConfig;
 import com.example.Licence.Management.dto.EncryptDataDto;
 import com.example.Licence.Management.dto.EncryptResponseDto;
+import com.example.Licence.Management.dto.LicenceDto;
 import com.example.Licence.Management.dto.LicenceKeyDto;
 import com.example.Licence.Management.dto.LicenceResponseDto;
 import com.example.Licence.Management.entity.Licence;
@@ -81,7 +83,21 @@ public class LicenceService {
 		Map<String, Object> response = new HashMap<String, Object>();
 
 		if(licence.isPresent()) {
-			response.put("Data", licence);              
+			Licence licenceObj = licence.get();
+			LicenceDto dto = LicenceDto.builder()
+					         .activeationDate(licenceObj.getActiveationDate())
+					         .companyAddress(licenceObj.getCompanyAddress())
+					         .companyName(licenceObj.getCompanyName())
+					         .contactNumber(licenceObj.getContactNumber())
+					         .expiredStatus(licenceObj.getExpiredStatus())
+					         .expiryDate(licenceObj.getExpiryDate())
+					         .graceperiod(licenceObj.getGracePeriod())
+					         .id(licenceObj.getId())
+					         .mailId(licenceObj.getMailId())
+					         .licenceKey(licenceObj.getLicenceKey())
+					         .status(licenceObj.getStatus())
+					         .build();
+			response.put("Data", dto);              
 			response.put("TimeStamp", new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));
 			return ResponseEntity.ok(response);
 		}else {
@@ -192,6 +208,13 @@ public class LicenceService {
 			response.put("TimeStamp", new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
+	}
+
+
+	public ResponseEntity<?> getAllLicence() {
+		
+		List<Licence> allLicence = licenceRepository.findAll();
+		return ResponseEntity.ok(allLicence);
 	}
 
 }
