@@ -61,6 +61,9 @@ public class LicenceController {
 	public ResponseEntity<?> getlistLicence(){
 		return licenceService.getAllLicence();
 	}
-
 	
+	@GetMapping("/getlicencebyid/{id}")
+	public ResponseEntity<?> getlicencebyid(@PathVariable UUID id){
+		return licenceService.getLicenceByid(id);
+	}
 }

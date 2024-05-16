@@ -217,4 +217,24 @@ public class LicenceService {
 		return ResponseEntity.ok(allLicence);
 	}
 
+
+	public ResponseEntity<?> getLicenceByid(UUID id) {
+		Optional<Licence> licence = licenceRepository.findById(id);
+		Licence licenceObj = licence.get();
+		LicenceDto dto = LicenceDto.builder()
+				         .activeationDate(licenceObj.getActiveationDate())
+				         .companyAddress(licenceObj.getCompanyAddress())
+					     .companyName(licenceObj.getCompanyName())
+				         .contactNumber(licenceObj.getContactNumber())
+				         .expiredStatus(licenceObj.getExpiredStatus())
+				         .expiryDate(licenceObj.getExpiryDate())
+				         .graceperiod(licenceObj.getGracePeriod())
+				         .id(licenceObj.getId())
+				         .mailId(licenceObj.getMailId())
+				         .licenceKey(licenceObj.getLicenceKey())
+				         .status(licenceObj.getStatus())
+				         .build();
+		return ResponseEntity.ok(dto);
+	}
+
 }
