@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.Licence.Management.common.LicenceKeyConfig;
 import com.example.Licence.Management.common.SecretKeyConfig;
+import com.example.Licence.Management.dto.DecryptDto;
 import com.example.Licence.Management.dto.EncryptDataDto;
-import com.example.Licence.Management.dto.EncryptResponseDto;
 import com.example.Licence.Management.dto.LicenceDto;
 import com.example.Licence.Management.dto.LicenceKeyDto;
 import com.example.Licence.Management.dto.LicenceResponseDto;
@@ -138,7 +138,7 @@ public class LicenceService {
 		if(obj.isPresent()) {
 			
 			Licence licence = obj.get();
-			EncryptResponseDto responsedto = EncryptResponseDto.builder()
+			DecryptDto responsedto = DecryptDto.builder()
     				                         .licenceKey(licence.getLicenceKey())
     				                         .mailId(licence.getMailId()).build();
 			
@@ -187,7 +187,7 @@ public class LicenceService {
     		SecretKey key = secretKeyConfig.getSecretKey();
     		
     		Licence licence = obj.get();
-    		EncryptResponseDto responsedto = EncryptResponseDto.builder()
+    		DecryptDto responsedto = DecryptDto.builder()
     				                         .licenceKey(licence.getLicenceKey())
     				                         .mailId(licence.getMailId()).build();
     		

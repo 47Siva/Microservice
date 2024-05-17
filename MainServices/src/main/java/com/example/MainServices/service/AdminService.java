@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,6 +20,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.Licence.Management.entity.Licence;
+import com.example.MainServices.config.DecryptDataConfig;
+import com.example.MainServices.dto.DecryptDto;
+import com.example.MainServices.dto.EncryptDataDto;
 import com.example.MainServices.dto.LicenceDto;
 import com.example.MainServices.dto.LicenceKeyDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +35,9 @@ public class AdminService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private DecryptDataConfig decryptDataConfig;
 
 	@Value("${licence.baseUrl}")
 	String licenceBaseUrl;
@@ -83,9 +91,9 @@ public class AdminService {
 			ResponseEntity<Map> responseEntity= restTemplate.getForEntity(url, Map.class);
 			Map<String, Object> responseBody = responseEntity.getBody();
 			if (responseBody != null && responseBody.containsKey("Data")) {
-				ObjectMapper mapper = new ObjectMapper();
-				LicenceDto licenceKeyDto = mapper.convertValue(responseBody.get("Data"), LicenceDto.class);
-				return ResponseEntity.ok(licenceKeyDto);
+//				ObjectMapper mapper = new ObjectMapper();
+//				LicenceDto licenceDto = mapper.convertValue(responseBody.get("Data"), LicenceDto.class);
+				return ResponseEntity.ok(responseBody);
 			} else {
 				return ResponseEntity.status(responseEntity.getStatusCode())
 						.body("Invalid response from License Service");
@@ -101,6 +109,7 @@ public class AdminService {
 
 	}
 
+	//encrypt Licence key
 	public ResponseEntity<?> getEncryptLicence(UUID id) throws JsonMappingException, JsonProcessingException {
 		String serviceUrl = licenceBaseUrl + "/getenlicencekey/" + id;
 
@@ -111,9 +120,9 @@ public class AdminService {
 			ResponseEntity<Map> responseEntity = restTemplate.getForEntity(uri, Map.class);
 			Map<String, Object> responseBody = responseEntity.getBody();
 			if (responseBody != null && responseBody.containsKey("Data")) {
-				ObjectMapper mapper = new ObjectMapper();
-				LicenceKeyDto licenceKeyDto = mapper.convertValue(responseBody.get("Data"), LicenceKeyDto.class);
-				return ResponseEntity.ok(licenceKeyDto);
+//				ObjectMapper mapper = new ObjectMapper();
+//				LicenceKeyDto licenceKeyDto = mapper.convertValue(responseBody.get("Data"), LicenceKeyDto.class);
+				return ResponseEntity.ok(responseBody);
 			} else {
 				return ResponseEntity.status(responseEntity.getStatusCode())
 						.body("Invalid response from License Service");
@@ -128,6 +137,66 @@ public class AdminService {
 		}
 
 	}
+
+	//encrypt data
+	public ResponseEntity<?> getEncryptData(UUID id) throws JsonMappingException, JsonProcessingException {
+		String serviceUrl = licenceBaseUrl + "/getencryptdata/" + id;
+		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
+		try {
+			ResponseEntity<Map> responseEntity = restTemplate.getForEntity(uri, Map.class);
+			Map<String , Object> responseBody = responseEntity.getBody();
+			if(responseBody != null && responseBody.containsKey("Data")) {
+				ObjectMapper mapper = new ObjectMapper();
+				EncryptDataDto encryptData = mapper.convertValue(responseBody.get("Data"), EncryptDataDto.class);
+				return ResponseEntity.ok(encryptData);
+			}else {
+				return ResponseEntity.status(responseEntity.getStatusCode())
+						.body("Invalid response from licence service");
+			}
+		}catch (HttpClientErrorException e) {
+			HttpStatusCode statusCode = e.getStatusCode();
+			String responseBody = e.getResponseBodyAsString();
+
+			ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> errorResponse = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>() {});
+			return ResponseEntity.status(statusCode).body(errorResponse);
+		}
+	}
+
+	public ResponseEntity<?> decryptData(EncryptDataDto dataDto) throws Exception {
+		
+		SecretKey key = decryptDataConfig.convertStringToSecretKey(dataDto.getSecretKey());
+	    Object decryptData =decryptDataConfig.decryptObject(dataDto.getEncrptData(), key);
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    
+	    //Assuming decryptData is a JSON string
+	    String jsonString = (String) decryptData;
+	    
+	    // Deserialize JSON string to DecryptedLicenceData
+        DecryptDto licenceData = objectMapper.readValue(jsonString, DecryptDto.class);
+	    
+	    DecryptDto decryptDto = DecryptDto.builder()
+	    		                .licenceKey(licenceData.getLicenceKey())
+	    		                .mailId(licenceData.getMailId())
+	    		                .build();
+//		Optional<Licence> licencekey = licenceRepository.findByLicenceKey(((EncryptResponseDto) decryptData).getLicenceKey());
+//		Map<String ,Object> response = new HashMap<String ,Object>();
+//		if(licencekey.isPresent()) {
+//			Licence licence = licencekey.get();
+//			if(licence.getLicenceKey().equals(((EncryptResponseDto) decryptData).getLicenceKey())) {
+//				licence.setStatus(Status.APPROVED);
+//				licence.setExpiredStatus(ExpiredStatus.NOT_EXPIRED);
+//			}
+//			response.put("Status", licence.getStatus());
+//			response.put("DecryptData", decryptData);
+//			licenceRepository.save(licence);
+			return ResponseEntity.ok(decryptDto);
+//		}else {
+//			return ResponseEntity.badRequest().body("Licence was not valid");
+//		}
+	}
+	
+	
 	
 
 }

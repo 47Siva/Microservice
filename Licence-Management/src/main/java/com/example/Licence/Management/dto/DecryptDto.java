@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class EncryptResponseDto implements Serializable {
+public class DecryptDto implements Serializable {
 
 	/**
 	 * 

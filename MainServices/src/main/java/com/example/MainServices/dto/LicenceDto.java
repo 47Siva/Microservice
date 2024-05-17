@@ -5,11 +5,15 @@ import java.util.UUID;
 import com.example.MainServices.enumuration.ExpiredStatus;
 import com.example.MainServices.enumuration.Status;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LicenceDto {
 
 	private UUID id;
@@ -33,4 +37,5 @@ public class LicenceDto {
 	private String activeationDate ;
 	
 	private String licenceKey;
+	
 }

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.Licence.Management.common.LicenceKeyConfig;
 import com.example.Licence.Management.common.SecretKeyConfig;
+import com.example.Licence.Management.dto.DecryptDto;
 import com.example.Licence.Management.dto.EncryptDataDto;
-import com.example.Licence.Management.dto.EncryptResponseDto;
 import com.example.Licence.Management.dto.LicenceKeyDto;
 import com.example.Licence.Management.entity.Licence;
 import com.example.Licence.Management.enumuration.ExpiredStatus;
@@ -52,11 +52,11 @@ public class AdminService {
 		SecretKey key = secretKeyConfig.convertStringToSecretKey(dataDto.getSecretKey());
 	    Object decryptData =secretKeyConfig.decryptObject(dataDto.getEncrptData(), key);
 		
-		Optional<Licence> licencekey = licenceRepository.findByLicenceKey(((EncryptResponseDto) decryptData).getLicenceKey());
+		Optional<Licence> licencekey = licenceRepository.findByLicenceKey(((DecryptDto) decryptData).getLicenceKey());
 		Map<String ,Object> response = new HashMap<String ,Object>();
 		if(licencekey.isPresent()) {
 			Licence licence = licencekey.get();
-			if(licence.getLicenceKey().equals(((EncryptResponseDto) decryptData).getLicenceKey())) {
+			if(licence.getLicenceKey().equals(((DecryptDto) decryptData).getLicenceKey())) {
 				licence.setStatus(Status.APPROVED);
 				licence.setExpiredStatus(ExpiredStatus.NOT_EXPIRED);
 			}

@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.MainServices.dto.EncryptDataDto;
 import com.example.MainServices.service.AdminService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -51,10 +54,20 @@ public class AdminController {
 		return adminService.getByLicenceId(id);
 	}
 
-	
+	// get encrypt licenckey
 	@GetMapping("/getenencryptlicencekey/{id}")
 	public ResponseEntity<?> getEncryptLicence(@PathVariable ("id") UUID id) throws JsonMappingException, JsonProcessingException{
 		return adminService.getEncryptLicence(id);
 	}
 	
+	//get encrypt data
+	@GetMapping("/getencryptdata/{id}")
+	public ResponseEntity<?> getEncryptLData(@PathVariable("id") UUID id) throws JsonMappingException, JsonProcessingException {
+		return adminService.getEncryptData(id);
+	}
+	
+	@PostMapping("/getdecryptdata")
+	public ResponseEntity<?> decryptData(@RequestBody EncryptDataDto dataDto) throws Exception{
+		return adminService.decryptData(dataDto);
+	}
 }
