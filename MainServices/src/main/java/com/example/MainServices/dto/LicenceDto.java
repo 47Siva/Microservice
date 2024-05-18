@@ -38,4 +38,25 @@ public class LicenceDto {
 	
 	private String licenceKey;
 	
+//	import com.fasterxml.jackson.annotation.JsonProperty;
+//
+//	public class LicenceDto {
+//	    private String someField;
+//
+//	    @JsonCreator
+//	    public LicenceDto(@JsonProperty("someField") String someField) {
+//	        this.someField = someField;
+//	    }
+//
+//	    @JsonProperty
+//	    public String getSomeField() {
+//	        return someField;
+//	    }
+//
+//	    @JsonProperty
+//	    public void setSomeField(String someField) {
+//	        this.someField = someField;
+//	    }
+//	}
+
 }

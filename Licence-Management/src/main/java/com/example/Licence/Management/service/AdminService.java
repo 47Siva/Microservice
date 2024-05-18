@@ -2,6 +2,8 @@ package com.example.Licence.Management.service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,14 +75,24 @@ public class AdminService {
 		Optional<Licence> obj = licenceRepository.findById(id);
 		if(obj.isPresent()) {
 			Licence licence = obj.get();
-			if(licence.getStatus().equals(Status.APPROVED) || licence.getExpiredStatus().equals(ExpiredStatus.NOT_EXPIRED)
-					|| licence.getLicenceKey().equals(licencekey)) {
-				licence.setActiveationDate(new SimpleDateFormat("yyy-MM-dd.HH.mm.ss").format(new Date()));
-				licence.setExpiryDate(LocalDate.now().plusYears(1).toString());
-				licence.setGracePeriod("30 days");
-			}
-			licenceRepository.save(licence);
-			return ResponseEntity.ok(licence);
+			if(licence.getStatus().equals(Status.APPROVED) && licence.getExpiredStatus().equals(ExpiredStatus.NOT_EXPIRED)
+					&& licence.getLicenceKey().equals(licencekey)) {
+				
+//				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				
+				LocalDateTime activationDate =  LocalDateTime.now();
+				
+	            LocalDateTime expiryDate = activationDate.plusMinutes(1);
+	            LocalDateTime gracePeriodEndDate = expiryDate.plusMinutes(1);
+				
+				licence.setActiveationDate(activationDate.toString());
+				licence.setExpiryDate(expiryDate.toString());
+				licence.setGracePeriod(gracePeriodEndDate.toString());
+				licenceRepository.save(licence);
+				return ResponseEntity.ok(licence);
+			}else {
+	            return ResponseEntity.badRequest().body("Invalid license key or license status.");
+	        }
 		}else{
 		return ResponseEntity.badRequest().body("Faild to get licence pleace check you Id");
 		}
