@@ -42,17 +42,18 @@ public class AdminController {
 		return adminService.getAllLicence();
 	}
 	
+	//using rest templet
+	@GetMapping("/getlicence/{id}")
+	public ResponseEntity<?> getByLicenceId(@PathVariable ("id") UUID id){		
+		return adminService.getByLicenceId(id);
+	}
+	
 	//return string
 	@GetMapping("/getlicencebyid/{id}")
 	public ResponseEntity<?> getLicenceById(@PathVariable UUID id ) throws JsonMappingException, JsonProcessingException{
 		return adminService.getbyLicenceId(id);
 	}
 	
-	//using rest templet
-	@GetMapping("/getlicence/{id}")
-	public ResponseEntity<?> getByLicenceId(@PathVariable ("id") UUID id){		
-		return adminService.getByLicenceId(id);
-	}
 
 	// get encrypt licenckey
 	@GetMapping("/getenencryptlicencekey/{id}")

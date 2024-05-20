@@ -33,11 +33,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class AdminService {
 
+	@Value("${licence.baseUrl}")
+	String licenceBaseUrl;
+	
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("${licence.baseUrl}")
-	String licenceBaseUrl;
+
 
 	@Autowired
 	private DecryptDataConfig decryptDataConfig;

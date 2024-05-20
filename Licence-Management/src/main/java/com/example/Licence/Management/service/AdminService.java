@@ -82,8 +82,8 @@ public class AdminService {
 				
 				LocalDateTime activationDate =  LocalDateTime.now();
 				
-	            LocalDateTime expiryDate = activationDate.plusMinutes(1);
-	            LocalDateTime gracePeriodEndDate = expiryDate.plusMinutes(1);
+	            LocalDateTime expiryDate = activationDate.plusSeconds(20);
+	            LocalDateTime gracePeriodEndDate = expiryDate.plusSeconds(10);
 				
 				licence.setActiveationDate(activationDate.toString());
 				licence.setExpiryDate(expiryDate.toString());
