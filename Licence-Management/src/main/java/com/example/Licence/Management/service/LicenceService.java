@@ -52,7 +52,7 @@ public class LicenceService {
 					          .companyAddress(licenceRequestDto.getCompanyAddress())
 					          .contactNumber(licenceRequestDto.getContactNumber())
 					          .mailId(licenceRequestDto.getMailId())
-					          .status(Status.REQUEST).build();
+					          .status(Status.ACTIVE).build();
 			licenceRepository.save(licence);
 			
 			LicenceResponseDto licencedto = LicenceResponseDto.builder()
@@ -117,6 +117,7 @@ public class LicenceService {
 			Licence licence = obj.get();
 			String licenceKey = key.generateLicenceKey(licence.getId(),licence.getMailId(),licence.getCompanyName());
 			licence.setLicenceKey(licenceKey);
+			licence.setStatus(Status.REQUEST);
 			licenceRepository.save(licence);
 	
 			response.put("Licencekey", obj.get().getLicenceKey());              

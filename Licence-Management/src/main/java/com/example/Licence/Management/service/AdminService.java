@@ -75,15 +75,15 @@ public class AdminService {
 		Optional<Licence> obj = licenceRepository.findById(id);
 		if(obj.isPresent()) {
 			Licence licence = obj.get();
-			if(licence.getStatus().equals(Status.APPROVED) && licence.getExpiredStatus().equals(ExpiredStatus.NOT_EXPIRED)
+			if(licence.getStatus().equals(Status.APPROVED) && licence.getExpiredStatus().equals(ExpiredStatus.ACTIVETED)
 					&& licence.getLicenceKey().equals(licencekey)) {
 				
 //				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 				
 				LocalDateTime activationDate =  LocalDateTime.now();
 				
-	            LocalDateTime expiryDate = activationDate.plusSeconds(20);
-	            LocalDateTime gracePeriodEndDate = expiryDate.plusSeconds(10);
+	            LocalDateTime expiryDate = activationDate.plusYears(1);
+	            LocalDateTime gracePeriodEndDate = expiryDate.plusDays(30);
 				
 				licence.setActiveationDate(activationDate.toString());
 				licence.setExpiryDate(expiryDate.toString());
