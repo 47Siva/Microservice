@@ -1,12 +1,20 @@
 package com.example.Licence.Management.service;
 
+import java.io.File;
+import java.nio.file.FileSystem;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.example.Licence.Management.entity.EmailStructure;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
@@ -41,5 +49,27 @@ public class EmailService {
 		mailMessage.setTo(mail);
 		
 		mailSender.send(mailMessage);
+	}
+	
+	public void  mailsend(String toEmail ,
+			              String subject,
+			              String body,
+			              String attachment) throws MessagingException {
+		
+		MimeMessage message = mailSender.createMimeMessage(); 
+		
+		MimeMessageHelper helper = new MimeMessageHelper(message ,true);
+		
+		helper.setFrom(fromMail);
+		helper.setTo(toEmail);
+		helper.setSubject(subject);
+		helper.setText(body);
+		
+		
+		FileSystemResource fileSystemResource = new FileSystemResource(new File(attachment));
+		
+		helper.addAttachment( fileSystemResource.getFilename(), fileSystemResource);
+		
+		mailSender.send(message );
 	}
 }
