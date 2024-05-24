@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Licence.Management.dto.EncryptDataDto;
-import com.example.Licence.Management.dto.LicenceKeyDto;
 import com.example.Licence.Management.dto.LicenceResponseDto;
 import com.example.Licence.Management.service.LicenceService;
 
@@ -52,8 +51,10 @@ public class LicenceController {
 	}
 	
 	@GetMapping("/getencryptdata/{id}")
-	public ResponseEntity<?> getencryptData (@PathVariable UUID id) throws Exception{
-		return licenceService.getEncryptData(id);
+	public ResponseEntity<?> getencryptData (@PathVariable UUID id,
+			@RequestParam String toemail,
+            @RequestParam String subject) throws Exception{
+		return licenceService.getEncryptData(id,toemail,subject);
 	}
 	
 	
@@ -63,7 +64,8 @@ public class LicenceController {
 	}
 	
 	@GetMapping("/getlicencebyid/{id}")
-	public ResponseEntity<?> getlicencebyid(@PathVariable UUID id){
+	public ResponseEntity<?> getlicencebyid(@PathVariable UUID id
+			                                ){
 		return licenceService.getLicenceByid(id);
 	}
 }

@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.example.Licence.Management.common.LicenceKeyConfig;
@@ -40,6 +41,9 @@ public class LicenceService {
 	
 	@Autowired
 	private SecretKeyConfig secretKeyConfig;
+	
+	@Autowired
+	private SendSimpleEmailMessage emailMessage;
 
 	public ResponseEntity<?> createLicence(LicenceResponseDto licenceRequestDto) {
 		
@@ -180,7 +184,7 @@ public class LicenceService {
 		}
 	}
 	
-    public ResponseEntity<?> getEncryptData(UUID id) throws Exception {
+    public ResponseEntity<?> getEncryptData(UUID id,String toemail ,String subject) throws Exception {
     	Optional<Licence> obj = licenceRepository.findById(id);
     	Map<String, Object> response = new HashMap<String , Object>();
     	
@@ -198,6 +202,10 @@ public class LicenceService {
     		EncryptDataDto dataResponse = EncryptDataDto.builder()
     				                          .encrptData(encryptedData)
     				                          .secretKey(secrtkey).build();
+    		
+    		String encryptData = dataResponse.toString();
+    		
+    		emailMessage.simpleMailsend(toemail, subject, encryptData);
     		
     		response.put("Data", dataResponse);
 			response.put("TimeStamp",new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));

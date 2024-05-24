@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.Licence.Management.entity.EmailStructure;
+import com.example.Licence.Management.dto.EmailStructure;
 import com.example.Licence.Management.service.EmailService;
 
 import jakarta.mail.MessagingException;
@@ -42,14 +42,9 @@ public class EmailController {
             @RequestParam("toEmail") String toEmail,
             @RequestParam("subject") String subject,
             @RequestParam("body") String body,
-            @RequestParam("attachment") String attachment) {
+            @RequestParam("attachment") String attachment) throws MessagingException {
+        emailService.mailsend(toEmail, subject, body, attachment);
         
-        try {
-            emailService.mailsend(toEmail, subject, body, attachment);
-            return "Mail sent successfully";
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return "Error sending mail: " + e.getMessage();
-        }
+        return "Successfully sent the mail..!";
     }
 }
