@@ -7,8 +7,11 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.example.Licence.Management.common.ExpriedStatusDeserializer;
+import com.example.Licence.Management.common.StatusDeserializer;
 import com.example.Licence.Management.enumuration.ExpiredStatus;
 import com.example.Licence.Management.enumuration.Status;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +32,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class Licence implements Serializable {
-	
+
 	/**
 	 * 
 	 */
@@ -38,29 +41,31 @@ public class Licence implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@GenericGenerator(name = "UUID2", type = org.hibernate.id.uuid.UuidGenerator.class)
-    @JdbcTypeCode(SqlTypes.CHAR)
+	@JdbcTypeCode(SqlTypes.CHAR)
 	private UUID id;
 
 	private String companyName;
-	
+
 	private String companyAddress;
-	
+
 	private long contactNumber;
-	
+
 	private String mailId;
-	
+
 	private String gracePeriod;
-	
+
 	private String expiryDate;
-	
-	@Enumerated(EnumType.STRING) 
+
+	@JsonDeserialize(using = StatusDeserializer.class)
+	@Enumerated(EnumType.STRING)
 	private Status status;
-	
+
+	@JsonDeserialize(using = ExpriedStatusDeserializer.class)
 	@Enumerated(EnumType.STRING)
 	private ExpiredStatus expiredStatus;
-	
+
 	private String activeationDate;
-	
+
 	private String licenceKey;
 
 }

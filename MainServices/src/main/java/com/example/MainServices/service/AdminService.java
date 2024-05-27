@@ -24,7 +24,6 @@ import com.example.MainServices.config.DecryptDataConfig;
 import com.example.MainServices.dto.DecryptDto;
 import com.example.MainServices.dto.EncryptDataDto;
 import com.example.MainServices.dto.LicenceDto;
-import com.example.MainServices.dto.LicenceKeyDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -35,11 +34,9 @@ public class AdminService {
 
 	@Value("${licence.baseUrl}")
 	String licenceBaseUrl;
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
-
-
 
 	@Autowired
 	private DecryptDataConfig decryptDataConfig;
@@ -172,7 +169,7 @@ public class AdminService {
 	}
 
 	public ResponseEntity<?> decryptData(EncryptDataDto dataDto) throws Exception {
-		
+
 		try {
 			SecretKey key = decryptDataConfig.convertStringToSecretKey(dataDto.getSecretKey());
 			Object decryptData = decryptDataConfig.decryptObject(dataDto.getEncrptData(), key);
@@ -180,17 +177,41 @@ public class AdminService {
 
 			// Assuming decryptData is a JSON string
 			String jsonString = decryptData.toString();
-			
+
 			// Convert the object to a JSON string
-		    jsonString = objectMapper.writeValueAsString(decryptData);
+			jsonString = objectMapper.writeValueAsString(decryptData);
 
 			// Deserialize JSON string to DecryptedLicenceData
 			DecryptDto licenceData = objectMapper.readValue(jsonString, DecryptDto.class);
-
 			DecryptDto decryptDto = DecryptDto.builder().licenceKey(licenceData.getLicenceKey())
 					.mailId(licenceData.getMailId()).build();
+
+			String serviceUrl = licenceBaseUrl + "/findByemail/" + licenceData.getMailId();
+
+			URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
+
+			ResponseEntity<Licence> responseEntity = restTemplate.getForEntity(uri, Licence.class);
+			Licence responseBody = responseEntity.getBody();
+
+			// Assuming decryptData is a JSON string
+			String jsonString1 = responseBody.toString();
+
+			// Convert the object to a JSON string
+			jsonString = objectMapper.writeValueAsString(decryptData);
+			Licence licence = objectMapper.readValue(jsonString1, Licence.class);
+			if(licenceData.getMailId().equals(licence.getMailId()) && licenceData.getLicenceKey().equals(licence.getLicenceKey())) {
+			
+			}
 			return ResponseEntity.ok(decryptDto);
-		}catch (Exception e) {
+		} catch (HttpClientErrorException e) {
+			HttpStatusCode statusCode = e.getStatusCode();
+			String responseBody = e.getResponseBodyAsString();
+			ObjectMapper objectMapper = new ObjectMapper();
+			Map<String, Object> errorResponse = objectMapper.readValue(responseBody,
+					new TypeReference<Map<String, Object>>() {
+					});
+			return ResponseEntity.status(statusCode).body(errorResponse);
+		} catch (Exception e) {
 			return ResponseEntity.internalServerError().body("Deecryption faild. Check the Payload");
 		}
 	}

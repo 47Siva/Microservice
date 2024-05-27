@@ -71,4 +71,8 @@ public class AdminController {
 	public ResponseEntity<?> decryptData(@RequestBody EncryptDataDto dataDto) throws Exception{
 		return adminService.decryptData(dataDto);
 	}
+
+//	public ResponseEntity<?> updatelicence(){
+//		return adminService.up;
+//	}
 }
