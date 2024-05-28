@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.MainServices.dto.EncryptDataDto;
@@ -63,8 +64,10 @@ public class AdminController {
 	
 	//get encrypt data
 	@GetMapping("/getencryptdata/{id}")
-	public ResponseEntity<?> getEncryptLData(@PathVariable("id") UUID id) throws JsonMappingException, JsonProcessingException {
-		return adminService.getEncryptData(id);
+	public ResponseEntity<?> getEncryptLData(
+			@PathVariable UUID id, @RequestParam String toemail,
+			@RequestParam String subject) throws JsonMappingException, JsonProcessingException {
+		return adminService.getEncryptData(id,toemail,subject);
 	}
 	
 	@PostMapping("/getdecryptdata")

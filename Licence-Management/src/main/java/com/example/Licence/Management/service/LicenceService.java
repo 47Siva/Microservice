@@ -218,15 +218,16 @@ public class LicenceService {
 		return ResponseEntity.ok(dto);
 	}
 
-	public ResponseEntity<?> statusupdate(Licence licence) {
+	public ResponseEntity<?> statusupdate(LicenceDto licenceDto) {
 
-		Optional<Licence> findbyid = licenceRepository.findById(licence.getId());
+		Optional<Licence> findbyid = licenceRepository.findById(licenceDto.getId());
 
 		if (findbyid.isPresent()) {
 			Licence licence1 = findbyid.get();
-			licence1.setStatus(licence.getStatus());
+			licence1.setStatus(licenceDto.getStatus());
 			licence1 = licenceRepository.save(licence1);
-			return ResponseEntity.ok(licence1);
+			Status status = licence1.getStatus();
+			return ResponseEntity.ok(status);
 		} else {
 			return ResponseEntity.badRequest().body("Bad request please check your id");
 		}
@@ -240,7 +241,21 @@ public class LicenceService {
 			Licence licence1 = findbyid.get();
 			licence1.setActiveationDate(licence.getActiveationDate());
 			licence = licenceRepository.save(licence1);
-			return ResponseEntity.ok(licence);
+			
+			LicenceDto dto = LicenceDto.builder()
+					.activeationDate(licence1.getActiveationDate())
+					.companyAddress(licence1.getCompanyAddress())
+					.companyName(licence1.getCompanyName())
+					.contactNumber(licence1.getContactNumber())
+					.expiredStatus(licence1.getExpiredStatus())
+					.expiryDate(licence1.getExpiryDate())
+					.graceperiod(licence1.getGracePeriod())
+					.id(licence1.getId())
+					.licenceKey(licence1.getLicenceKey())
+					.mailId(licence1.getMailId())
+					.status(licence1.getStatus())
+					.build();
+			return ResponseEntity.ok(dto);
 		} else {
 			return ResponseEntity.badRequest().body("Bad request please check your payload");
 		}
@@ -253,7 +268,21 @@ public class LicenceService {
 			Licence licence1 = findbyid.get();
 			licence1.setExpiredStatus(licence.getExpiredStatus());
 			licence = licenceRepository.save(licence1);
-			return ResponseEntity.ok(licence);
+			
+			LicenceDto dto = LicenceDto.builder()
+					.activeationDate(licence1.getActiveationDate())
+					.companyAddress(licence1.getCompanyAddress())
+					.companyName(licence1.getCompanyName())
+					.contactNumber(licence1.getContactNumber())
+					.expiredStatus(licence1.getExpiredStatus())
+					.expiryDate(licence1.getExpiryDate())
+					.graceperiod(licence1.getGracePeriod())
+					.id(licence1.getId())
+					.licenceKey(licence1.getLicenceKey())
+					.mailId(licence1.getMailId())
+					.status(licence1.getStatus())
+					.build();
+			return ResponseEntity.ok(dto);
 		} else {
 			return ResponseEntity.badRequest().body("Bad request please check your payload");
 		}
@@ -266,7 +295,21 @@ public class LicenceService {
 			Licence licence1 = findbyid.get();
 			licence1.setExpiryDate(licence.getExpiryDate());
 			licence = licenceRepository.save(licence1);
-			return ResponseEntity.ok(licence);
+			
+			LicenceDto dto = LicenceDto.builder()
+					.activeationDate(licence1.getActiveationDate())
+					.companyAddress(licence1.getCompanyAddress())
+					.companyName(licence1.getCompanyName())
+					.contactNumber(licence1.getContactNumber())
+					.expiredStatus(licence1.getExpiredStatus())
+					.expiryDate(licence1.getExpiryDate())
+					.graceperiod(licence1.getGracePeriod())
+					.id(licence1.getId())
+					.licenceKey(licence1.getLicenceKey())
+					.mailId(licence1.getMailId())
+					.status(licence1.getStatus())
+					.build();
+			return ResponseEntity.ok(dto);
 		} else {
 			return ResponseEntity.badRequest().body("Bad request please check your payload");
 		}
@@ -279,7 +322,21 @@ public class LicenceService {
 			Licence licence1 = findbyid.get();
 			licence1.setGracePeriod(licence.getGracePeriod());
 			licence = licenceRepository.save(licence1);
-			return ResponseEntity.ok(licence);
+			
+			LicenceDto dto = LicenceDto.builder()
+					.activeationDate(licence1.getActiveationDate())
+					.companyAddress(licence1.getCompanyAddress())
+					.companyName(licence1.getCompanyName())
+					.contactNumber(licence1.getContactNumber())
+					.expiredStatus(licence1.getExpiredStatus())
+					.expiryDate(licence1.getExpiryDate())
+					.graceperiod(licence1.getGracePeriod())
+					.id(licence1.getId())
+					.licenceKey(licence1.getLicenceKey())
+					.mailId(licence1.getMailId())
+					.status(licence1.getStatus())
+					.build();
+			return ResponseEntity.ok(dto);
 		} else {
 			return ResponseEntity.badRequest().body("Bad request please check your payload");
 		}
@@ -289,7 +346,21 @@ public class LicenceService {
 		Optional<Licence> licence = licenceRepository.findByMailId(email);
 		if(licence.isPresent()) {
 			Licence licence1 = licence.get();
-			return ResponseEntity.ok(licence1);
+			
+			LicenceDto dto = LicenceDto.builder()
+					.activeationDate(licence1.getActiveationDate())
+					.companyAddress(licence1.getCompanyAddress())
+					.companyName(licence1.getCompanyName())
+					.contactNumber(licence1.getContactNumber())
+					.expiredStatus(licence1.getExpiredStatus())
+					.expiryDate(licence1.getExpiryDate())
+					.graceperiod(licence1.getGracePeriod())
+					.id(licence1.getId())
+					.licenceKey(licence1.getLicenceKey())
+					.mailId(licence1.getMailId())
+					.status(licence1.getStatus())
+					.build();
+			return ResponseEntity.ok(dto);
 		}else {
 			return ResponseEntity.badRequest().body("Bad request please check your email");
 		}

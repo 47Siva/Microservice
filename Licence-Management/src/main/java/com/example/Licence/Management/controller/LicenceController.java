@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Licence.Management.dto.LicenceDto;
 import com.example.Licence.Management.dto.LicenceResponseDto;
 import com.example.Licence.Management.entity.Licence;
 import com.example.Licence.Management.service.LicenceService;
@@ -68,8 +69,8 @@ public class LicenceController {
 
 	// status update api
 	@PutMapping("/statusupdate")
-	public ResponseEntity<?> statusUpdate(@RequestBody Licence licence) {
-		return licenceService.statusupdate(licence);
+	public ResponseEntity<?> statusUpdate(@RequestBody LicenceDto licenceDto) {
+		return licenceService.statusupdate(licenceDto);
 	}
 
 	// activationdate update api
@@ -92,7 +93,7 @@ public class LicenceController {
 
 	// graceperiod update api
 	@PutMapping("/graceperiodupdate")
-	public ResponseEntity<?> gracePeriodUpdate(@RequestBody Licence licence) {
+	public ResponseEntity<?> gracePeriodUpdate(@PathVariable Licence licence) {
 		return licenceService.gracePeriodUpdate(licence);
 	}
 	

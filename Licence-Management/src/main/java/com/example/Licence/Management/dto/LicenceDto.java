@@ -5,11 +5,15 @@ import java.util.UUID;
 import com.example.Licence.Management.enumuration.ExpiredStatus;
 import com.example.Licence.Management.enumuration.Status;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LicenceDto {
 
 	private UUID id;

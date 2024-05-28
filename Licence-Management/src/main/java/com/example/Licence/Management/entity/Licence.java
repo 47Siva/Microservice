@@ -56,11 +56,10 @@ public class Licence implements Serializable {
 
 	private String expiryDate;
 
-	@JsonDeserialize(using = StatusDeserializer.class)
+
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
-	@JsonDeserialize(using = ExpriedStatusDeserializer.class)
 	@Enumerated(EnumType.STRING)
 	private ExpiredStatus expiredStatus;
 

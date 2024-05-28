@@ -1,6 +1,7 @@
 package com.example.MainServices.service;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -10,9 +11,11 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +27,7 @@ import com.example.MainServices.config.DecryptDataConfig;
 import com.example.MainServices.dto.DecryptDto;
 import com.example.MainServices.dto.EncryptDataDto;
 import com.example.MainServices.dto.LicenceDto;
+import com.example.MainServices.enumuration.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -142,9 +146,12 @@ public class AdminService {
 	}
 
 	// encrypt data
-	public ResponseEntity<?> getEncryptData(UUID id) throws JsonMappingException, JsonProcessingException {
-		String serviceUrl = licenceBaseUrl + "/getencryptdata/" + id;
-		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
+	public ResponseEntity<?> getEncryptData(UUID id, String toemail, String subject) throws JsonMappingException, JsonProcessingException {
+		String serviceUrl = licenceBaseUrl +"/getencryptdata/" + id;
+		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl)
+		            .queryParam("toemail", toemail)
+		            .queryParam("subject", subject)
+		            .build().toUri();
 		try {
 			ResponseEntity<Map> responseEntity = restTemplate.getForEntity(uri, Map.class);
 			Map<String, Object> responseBody = responseEntity.getBody();
@@ -171,6 +178,7 @@ public class AdminService {
 	public ResponseEntity<?> decryptData(EncryptDataDto dataDto) throws Exception {
 
 		try {
+			Map<String, Object> map = new HashMap<>();
 			SecretKey key = decryptDataConfig.convertStringToSecretKey(dataDto.getSecretKey());
 			Object decryptData = decryptDataConfig.decryptObject(dataDto.getEncrptData(), key);
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -187,22 +195,46 @@ public class AdminService {
 					.mailId(licenceData.getMailId()).build();
 
 			String serviceUrl = licenceBaseUrl + "/findByemail/" + licenceData.getMailId();
+			URI uriEmail = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
+			ResponseEntity<LicenceDto> responseEntity = restTemplate.getForEntity(uriEmail, LicenceDto.class);
+			LicenceDto licence = responseEntity.getBody();
 
-			URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
 
-			ResponseEntity<Licence> responseEntity = restTemplate.getForEntity(uri, Licence.class);
-			Licence responseBody = responseEntity.getBody();
-
-			// Assuming decryptData is a JSON string
-			String jsonString1 = responseBody.toString();
-
-			// Convert the object to a JSON string
-			jsonString = objectMapper.writeValueAsString(decryptData);
-			Licence licence = objectMapper.readValue(jsonString1, Licence.class);
-			if(licenceData.getMailId().equals(licence.getMailId()) && licenceData.getLicenceKey().equals(licence.getLicenceKey())) {
-			
+			if (licenceData.getMailId().equals(licence.getMailId())
+					&& licenceData.getLicenceKey().equals(licence.getLicenceKey())) {
+				
+				
+				
+				LicenceDto dto = LicenceDto.builder()
+						.activeationDate(licence.getActiveationDate())
+						.companyAddress(licence.getCompanyAddress())
+						.companyName(licence.getCompanyName())
+						.contactNumber(licence.getContactNumber())
+						.expiredStatus(licence.getExpiredStatus())
+						.expiryDate(licence.getExpiryDate())
+						.graceperiod(licence.getGraceperiod())
+						.id(licence.getId())
+						.licenceKey(licence.getLicenceKey())
+						.mailId(licence.getMailId())
+						.status(Status.APPROVED)
+						.build();
+				
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				
+				HttpEntity<LicenceDto> requestEntity = new HttpEntity<>(dto, headers);
+				
+				String serviceUrl1 = licenceBaseUrl + "/statusupdate";
+				URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl1)
+				            .build().toUri();
+				
+				ResponseEntity<Status> responseEntity2 = restTemplate.postForEntity(serviceUrl, requestEntity, Status.class);
+				Status responseBodyDto = responseEntity2.getBody();
+				
+				map.put("Status", responseBodyDto);
 			}
-			return ResponseEntity.ok(decryptDto);
+			map.put("DecryptDto", decryptDto);
+			return ResponseEntity.ok(map);
 		} catch (HttpClientErrorException e) {
 			HttpStatusCode statusCode = e.getStatusCode();
 			String responseBody = e.getResponseBodyAsString();
@@ -211,9 +243,10 @@ public class AdminService {
 					new TypeReference<Map<String, Object>>() {
 					});
 			return ResponseEntity.status(statusCode).body(errorResponse);
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("Deecryption faild. Check the Payload");
-		}
+		} /*
+			 * catch (Exception e) { return ResponseEntity.internalServerError().
+			 * body("Deecryption faild. Check the Payload"); }
+			 */
 	}
 
 }
