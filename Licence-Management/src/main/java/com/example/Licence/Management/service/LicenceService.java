@@ -234,13 +234,13 @@ public class LicenceService {
 
 	}
 
-	public ResponseEntity<?> activationdateupdate(Licence licence) {
+	public ResponseEntity<?> activationdateupdate(LicenceDto licence) {
 		Optional<Licence> findbyid = licenceRepository.findById(licence.getId());
 
 		if (findbyid.isPresent()) {
 			Licence licence1 = findbyid.get();
 			licence1.setActiveationDate(licence.getActiveationDate());
-			licence = licenceRepository.save(licence1);
+			licenceRepository.save(licence1);
 			
 			LicenceDto dto = LicenceDto.builder()
 					.activeationDate(licence1.getActiveationDate())
@@ -261,13 +261,13 @@ public class LicenceService {
 		}
 	}
 
-	public ResponseEntity<?> expiredStatusUpdate(Licence licence) {
+	public ResponseEntity<?> expiredStatusUpdate(LicenceDto licence) {
 		Optional<Licence> findbyid = licenceRepository.findById(licence.getId());
 
 		if (findbyid.isPresent()) {
 			Licence licence1 = findbyid.get();
 			licence1.setExpiredStatus(licence.getExpiredStatus());
-			licence = licenceRepository.save(licence1);
+		    licenceRepository.save(licence1);
 			
 			LicenceDto dto = LicenceDto.builder()
 					.activeationDate(licence1.getActiveationDate())
@@ -288,13 +288,13 @@ public class LicenceService {
 		}
 	}
 
-	public ResponseEntity<?> expireddateUpdate(Licence licence) {
+	public ResponseEntity<?> expireddateUpdate(LicenceDto licence) {
 		Optional<Licence> findbyid = licenceRepository.findById(licence.getId());
 
 		if (findbyid.isPresent()) {
 			Licence licence1 = findbyid.get();
 			licence1.setExpiryDate(licence.getExpiryDate());
-			licence = licenceRepository.save(licence1);
+			licenceRepository.save(licence1);
 			
 			LicenceDto dto = LicenceDto.builder()
 					.activeationDate(licence1.getActiveationDate())
@@ -315,13 +315,13 @@ public class LicenceService {
 		}
 	}
 
-	public ResponseEntity<?> gracePeriodUpdate(Licence licence) {
+	public ResponseEntity<?> gracePeriodUpdate(LicenceDto licence) {
 		Optional<Licence> findbyid = licenceRepository.findById(licence.getId());
 
 		if (findbyid.isPresent()) {
 			Licence licence1 = findbyid.get();
-			licence1.setGracePeriod(licence.getGracePeriod());
-			licence = licenceRepository.save(licence1);
+			licence1.setGracePeriod(licence.getGraceperiod());
+			licenceRepository.save(licence1);
 			
 			LicenceDto dto = LicenceDto.builder()
 					.activeationDate(licence1.getActiveationDate())
@@ -344,7 +344,6 @@ public class LicenceService {
 
 	public ResponseEntity<?> findbymailId(String email) {
 		Optional<Licence> licence = licenceRepository.findByMailId(email);
-		if(licence.isPresent()) {
 			Licence licence1 = licence.get();
 			
 			LicenceDto dto = LicenceDto.builder()
@@ -361,9 +360,6 @@ public class LicenceService {
 					.status(licence1.getStatus())
 					.build();
 			return ResponseEntity.ok(dto);
-		}else {
-			return ResponseEntity.badRequest().body("Bad request please check your email");
-		}
 	}
 
 }

@@ -75,7 +75,7 @@ public class AdminService {
 		Optional<Licence> obj = licenceRepository.findById(id);
 		if(obj.isPresent()) {
 			Licence licence = obj.get();
-			if(licence.getStatus().equals(Status.APPROVED) && licence.getExpiredStatus().equals(ExpiredStatus.ACTIVETED)
+			if(licence.getStatus().equals(Status.APPROVED) && licence.getExpiredStatus().equals(ExpiredStatus.NOT_EXPIRED)
 					&& licence.getLicenceKey().equals(licencekey)) {
 				
 //				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

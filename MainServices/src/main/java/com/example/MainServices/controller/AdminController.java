@@ -75,7 +75,8 @@ public class AdminController {
 		return adminService.decryptData(dataDto);
 	}
 
-//	public ResponseEntity<?> updatelicence(){
-//		return adminService.up;
-//	}
+	public ResponseEntity<?> updatelicence(@RequestParam ("id") UUID id,
+            @RequestParam ("licencekey") String licencekey) throws JsonMappingException, JsonProcessingException{
+		return adminService.Update(id,licencekey);
+	}
 }

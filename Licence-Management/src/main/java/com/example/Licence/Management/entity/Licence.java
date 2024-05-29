@@ -7,11 +7,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.example.Licence.Management.common.ExpriedStatusDeserializer;
-import com.example.Licence.Management.common.StatusDeserializer;
 import com.example.Licence.Management.enumuration.ExpiredStatus;
 import com.example.Licence.Management.enumuration.Status;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

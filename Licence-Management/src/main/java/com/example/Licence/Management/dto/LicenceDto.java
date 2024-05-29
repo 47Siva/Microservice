@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class LicenceDto {
 
 	private UUID id;

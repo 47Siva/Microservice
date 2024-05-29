@@ -68,32 +68,32 @@ public class LicenceController {
 	}
 
 	// status update api
-	@PutMapping("/statusupdate")
+	@PostMapping("/statusupdate")
 	public ResponseEntity<?> statusUpdate(@RequestBody LicenceDto licenceDto) {
 		return licenceService.statusupdate(licenceDto);
 	}
 
 	// activationdate update api
 	@PutMapping("/activationdateupdate")
-	public ResponseEntity<?> activationdateupdate(@RequestBody Licence licence) {
+	public ResponseEntity<?> activationdateupdate(@RequestBody LicenceDto licence) {
 		return licenceService.activationdateupdate(licence);
 	}
 
 	// expiredStatus update api
 	@PutMapping("/expiredStatusupdate")
-	public ResponseEntity<?> expiredStatusUpdate(@RequestBody Licence licence) {
+	public ResponseEntity<?> expiredStatusUpdate(@RequestBody LicenceDto licence) {
 		return licenceService.expiredStatusUpdate(licence);
 	}
 
 	// expireddate update api
 	@PutMapping("/expireddateupdate")
-	public ResponseEntity<?> expireddateUpdate(@RequestBody Licence licence) {
+	public ResponseEntity<?> expireddateUpdate(@RequestBody LicenceDto licence) {
 		return licenceService.expireddateUpdate(licence);
 	}
 
 	// graceperiod update api
 	@PutMapping("/graceperiodupdate")
-	public ResponseEntity<?> gracePeriodUpdate(@PathVariable Licence licence) {
+	public ResponseEntity<?> gracePeriodUpdate(@PathVariable LicenceDto licence) {
 		return licenceService.gracePeriodUpdate(licence);
 	}
 	

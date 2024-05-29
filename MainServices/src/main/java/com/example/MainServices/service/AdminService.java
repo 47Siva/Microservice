@@ -1,6 +1,7 @@
 package com.example.MainServices.service;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import com.example.MainServices.config.DecryptDataConfig;
 import com.example.MainServices.dto.DecryptDto;
 import com.example.MainServices.dto.EncryptDataDto;
 import com.example.MainServices.dto.LicenceDto;
+import com.example.MainServices.enumuration.ExpiredStatus;
 import com.example.MainServices.enumuration.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -79,9 +81,9 @@ public class AdminService {
 	// return licence response
 	public ResponseEntity<?> getByLicenceId(UUID id) {
 		String serviceUrl = licenceBaseUrl + "/getlicencebyid/" + id;
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
-		// URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
-		ResponseEntity<LicenceDto> licence = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
+//		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
+		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
+		ResponseEntity<LicenceDto> licence = restTemplate.exchange(uri, HttpMethod.GET, null,
 				new ParameterizedTypeReference<LicenceDto>() {
 				});
 		return ResponseEntity.ok(licence.getBody());
@@ -146,12 +148,11 @@ public class AdminService {
 	}
 
 	// encrypt data
-	public ResponseEntity<?> getEncryptData(UUID id, String toemail, String subject) throws JsonMappingException, JsonProcessingException {
-		String serviceUrl = licenceBaseUrl +"/getencryptdata/" + id;
-		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl)
-		            .queryParam("toemail", toemail)
-		            .queryParam("subject", subject)
-		            .build().toUri();
+	public ResponseEntity<?> getEncryptData(UUID id, String toemail, String subject)
+			throws JsonMappingException, JsonProcessingException {
+		String serviceUrl = licenceBaseUrl + "/getencryptdata/" + id;
+		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).queryParam("toemail", toemail)
+				.queryParam("subject", subject).build().toUri();
 		try {
 			ResponseEntity<Map> responseEntity = restTemplate.getForEntity(uri, Map.class);
 			Map<String, Object> responseBody = responseEntity.getBody();
@@ -199,37 +200,29 @@ public class AdminService {
 			ResponseEntity<LicenceDto> responseEntity = restTemplate.getForEntity(uriEmail, LicenceDto.class);
 			LicenceDto licence = responseEntity.getBody();
 
-
 			if (licenceData.getMailId().equals(licence.getMailId())
 					&& licenceData.getLicenceKey().equals(licence.getLicenceKey())) {
-				
-				
-				
-				LicenceDto dto = LicenceDto.builder()
-						.activeationDate(licence.getActiveationDate())
-						.companyAddress(licence.getCompanyAddress())
-						.companyName(licence.getCompanyName())
-						.contactNumber(licence.getContactNumber())
-						.expiredStatus(licence.getExpiredStatus())
-						.expiryDate(licence.getExpiryDate())
-						.graceperiod(licence.getGraceperiod())
-						.id(licence.getId())
-						.licenceKey(licence.getLicenceKey())
-						.mailId(licence.getMailId())
-						.status(Status.APPROVED)
+				LicenceDto dto = LicenceDto.builder().activeationDate(licence.getActiveationDate())
+						.companyAddress(licence.getCompanyAddress()).companyName(licence.getCompanyName())
+						.contactNumber(licence.getContactNumber()).expiredStatus(licence.getExpiredStatus())
+						.expiryDate(licence.getExpiryDate()).graceperiod(licence.getGraceperiod()).id(licence.getId())
+						.licenceKey(licence.getLicenceKey()).mailId(licence.getMailId()).status(Status.APPROVED)
 						.build();
-				
+
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
-				
+
 				HttpEntity<LicenceDto> requestEntity = new HttpEntity<>(dto, headers);
-				
+
 				String serviceUrl1 = licenceBaseUrl + "/statusupdate";
-				URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl1)
-				            .build().toUri();
-				
-				ResponseEntity<Status> responseEntity2 = restTemplate.postForEntity(serviceUrl, requestEntity, Status.class);
+				URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl1).build().toUri();
+
+				ResponseEntity<Status> responseEntity2 = restTemplate.postForEntity(uri, requestEntity, Status.class);
 				Status responseBodyDto = responseEntity2.getBody();
+
+				String serviceUrl2 = licenceBaseUrl + "/expiredStatusupdate";
+				URI expiredStatusupdateuri = UriComponentsBuilder.fromHttpUrl(serviceUrl2).build().toUri();
+				ResponseEntity<LicenceDto> responseEntity3 = restTemplate.postForEntity(expiredStatusupdateuri, requestEntity, LicenceDto.class);
 				
 				map.put("Status", responseBodyDto);
 			}
@@ -243,10 +236,65 @@ public class AdminService {
 					new TypeReference<Map<String, Object>>() {
 					});
 			return ResponseEntity.status(statusCode).body(errorResponse);
-		} /*
-			 * catch (Exception e) { return ResponseEntity.internalServerError().
-			 * body("Deecryption faild. Check the Payload"); }
-			 */
+		} catch (Exception e) {
+			return ResponseEntity.internalServerError().body("Deecryption faild. Check the Payload");
+		}
+	}
+
+	public ResponseEntity<?> Update(UUID id, String licenceKey) throws JsonMappingException, JsonProcessingException {
+
+		String serviceUrl = licenceBaseUrl + "/getlicencebyid/" + id;
+		URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrl).build().toUri();
+		ResponseEntity<LicenceDto> responseEntity = restTemplate.getForEntity(uri, LicenceDto.class);
+		LicenceDto licence = responseEntity.getBody();
+		try {
+		if (licence.getId().equals(id) && licence.getStatus().equals(Status.APPROVED)
+				&& licence.getLicenceKey().equals(licenceKey)
+				&& licence.getExpiredStatus().equals(ExpiredStatus.NOT_EXPIRED)) {
+
+			LocalDateTime activationDate =  LocalDateTime.now();
+			
+            LocalDateTime expiryDate = activationDate.plusYears(1);
+            LocalDateTime gracePeriodEndDate = expiryDate.plusDays(30);
+            
+            LicenceDto dto = LicenceDto.builder().activeationDate(activationDate.toString())
+					.companyAddress(licence.getCompanyAddress()).companyName(licence.getCompanyName())
+					.contactNumber(licence.getContactNumber()).expiredStatus(ExpiredStatus.ACTIVETED)
+					.expiryDate(expiryDate.toString()).graceperiod(expiryDate.toString()).id(licence.getId())
+					.licenceKey(licence.getLicenceKey()).mailId(licence.getMailId()).status(licence.getStatus())
+					.build();
+            
+            HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<LicenceDto> requestEntity = new HttpEntity<>(dto, headers);
+			String serviceUrl1 = licenceBaseUrl + "/activationdateupdate";
+			URI activationdateuri = UriComponentsBuilder.fromHttpUrl(serviceUrl1).build().toUri();
+			ResponseEntity<LicenceDto> responseEntity2 = restTemplate.postForEntity(activationdateuri, requestEntity, LicenceDto.class);
+			
+			
+			String serviceUrl2 = licenceBaseUrl + "/expireddateupdate";
+			URI expireddateupdateuri = UriComponentsBuilder.fromHttpUrl(serviceUrl2).build().toUri();
+			ResponseEntity<LicenceDto> responseEntity3 = restTemplate.postForEntity(expireddateupdateuri, requestEntity, LicenceDto.class);
+			
+			String serviceUrl3 = licenceBaseUrl + "/graceperiodupdate";
+			URI graceperiodupdate = UriComponentsBuilder.fromHttpUrl(serviceUrl3).build().toUri();
+			ResponseEntity<LicenceDto> responseEntity4 = restTemplate.postForEntity(graceperiodupdate, requestEntity, LicenceDto.class);
+			
+			return ResponseEntity.ok(dto);
+		} else {
+			return ResponseEntity.badRequest().body("Data miss match please check your data");
+		}
+		} catch (HttpClientErrorException e) {
+			HttpStatusCode statusCode = e.getStatusCode();
+			String responseBody = e.getResponseBodyAsString();
+			ObjectMapper objectMapper = new ObjectMapper();
+			Map<String, Object> errorResponse = objectMapper.readValue(responseBody,
+					new TypeReference<Map<String, Object>>() {
+					});
+			return ResponseEntity.status(statusCode).body(errorResponse);
+		}
+		
+		
 	}
 
 }
