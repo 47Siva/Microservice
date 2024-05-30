@@ -24,6 +24,7 @@ import com.example.Licence.Management.dto.LicenceDto;
 import com.example.Licence.Management.dto.LicenceKeyDto;
 import com.example.Licence.Management.dto.LicenceResponseDto;
 import com.example.Licence.Management.entity.Licence;
+import com.example.Licence.Management.enumuration.ExpiredStatus;
 import com.example.Licence.Management.enumuration.Status;
 import com.example.Licence.Management.repository.LicenceRepository;
 
@@ -360,6 +361,44 @@ public class LicenceService {
 					.status(licence1.getStatus())
 					.build();
 			return ResponseEntity.ok(dto);
+	}
+
+	public ResponseEntity<?> sendencryptdatatoemail(UUID id, String toemail, String subject) throws Exception {
+		Optional<Licence> obj = licenceRepository.findById(id);
+		Map<String, Object> response = new HashMap<String, Object>();
+
+		if (obj.isPresent()) {
+			SecretKey key = secretKeyConfig.getSecretKey();
+
+			Licence licence = obj.get();
+			DecryptDto responsedto = DecryptDto.builder().licenceKey(licence.getLicenceKey())
+					.mailId(licence.getMailId()).build();
+
+			String encryptedData = secretKeyConfig.encryptObject(responsedto, key);
+			String secrtkey = secretKeyConfig.convertSecretKeyToString(key);
+
+			licence.setStatus(Status.REQUEST);
+
+			EncryptDataDto dataResponse = EncryptDataDto.builder().encrptData(encryptedData).secretKey(secrtkey)
+					.build();
+
+			
+			SecretKey encryptkey = secretKeyConfig.convertStringToSecretKey(dataResponse.getSecretKey());
+		    Object decryptDataObj =secretKeyConfig.decryptObject(dataResponse.getEncrptData(), encryptkey);
+		    String decryptData = decryptDataObj.toString();
+			
+			emailMessage.simpleMailsend(toemail, subject, decryptData);
+
+			response.put("Data", dataResponse);
+			response.put("TimeStamp", new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));
+			response.put("Status", HttpStatus.OK.toString());
+			return ResponseEntity.ok(response);
+		} else {
+			response.put("error", HttpStatus.BAD_REQUEST);
+			response.put("Message", "Failed to encrypt data please check your ID");
+			response.put("TimeStamp", new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
 	}
 
 }

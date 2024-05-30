@@ -1,0 +1,621 @@
+{
+	"info": {
+		"_postman_id": "47bdfdc9-32fd-433a-a7cd-7fffe4329a5a",
+		"name": "Micro Service Project API'S",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "29202863",
+		"_collection_link": "https://resaleportalprojectapitesting.postman.co/workspace/My-Workspace~61a4c24e-dceb-4258-80a5-435e01c713d0/collection/29202863-47bdfdc9-32fd-433a-a7cd-7fffe4329a5a?action=share&source=collection_link&creator=29202863"
+	},
+	"item": [
+		{
+			"name": "LICENCE AND MANAGEMENT",
+			"item": [
+				{
+					"name": "License Request Service",
+					"item": [
+						{
+							"name": "Create a Licence Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \r\n    \"companyName\":\"Info Tech\",\r\n    \"companyAddress\":\"456 Innovation Drive, Tech City\",\r\n    \"contactNumber\":1234567890,\r\n    \"mailId\":\"info@techinnovations.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/licence/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Generate the License",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8081/api/licence/generatelicencekey/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Encrypt License Key",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/licence/getenlicencekey/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Decrypt The License",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"licenceKey\": \"GTD22PiRHBJZTkgV0dxQPeMBk+tTHFkpqGXuOOmibUTMLceMKopPvzT9WsyRjfn+F8nXDA==\",\r\n        \"secretKey\": \"WWsIocQw35HImuKL8SoOGKKLP/6nxjXPE+RakbcZrKs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/admin/getdecryptlicenceKey"
+							},
+							"response": []
+						},
+						{
+							"name": "Enrypt The Data",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/licence/getencryptdata/b72e1838-b13e-4076-9f03-972c8e8bdbc6?toemail=sivakalaikalai7@gmail.com&subject=Licence Request",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"licence",
+										"getencryptdata",
+										"b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+									],
+									"query": [
+										{
+											"key": "toemail",
+											"value": "sivakalaikalai7@gmail.com"
+										},
+										{
+											"key": "subject",
+											"value": "Licence Request"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Derypt The Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"encrptData\": \"h5nH783VKnkXE2Z6gYkGE6dV24QmTX9hhz+6LpSHNxGbCemoigXufr9Fc0l3pCw/hCEnCRQ/i/fs9gAfdzSxwgmf0UFt1lhsukgDoiN8VdFN0kZhIwaP9G0dilkH7VYcY4xWU0kDpBONWgpY3q4G9az4Gjh+G8aBetBKEPjN8tZLghxy3IjZnipnQ5aEPcpngebDa0b7SIoP6fdWtouSuUldvINX14Li3tOTI9+bv7Shu918CiuTkDAIkgM0INktsr7pzQ==\",\r\n        \"secretKey\": \"WWsIocQw35HImuKL8SoOGKKLP/6nxjXPE+RakbcZrKs=\"\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/admin/getdecryptdata"
+							},
+							"response": []
+						},
+						{
+							"name": "Update The License",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/admin/updatelicence?id=b72e1838-b13e-4076-9f03-972c8e8bdbc6&licencekey=4DC40EF4-4BE1-A4F5-D7D4-B057EA8AC843",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"admin",
+										"updatelicence"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+										},
+										{
+											"key": "licencekey",
+											"value": "4DC40EF4-4BE1-A4F5-D7D4-B057EA8AC843"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get The All details for  license using microservice",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8081/api/licence/getlicence/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Get by Licence Id using microservice",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8081/api/licence/getlicencebyid/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Get the License Data",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/licence/getLicence/b72e1838-b13e-4076-9f03-972c8e8bdbc6?toemail=sivakalaikalai7@gmail.com&subject=Licence Request",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"licence",
+										"getLicence",
+										"b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+									],
+									"query": [
+										{
+											"key": "toemail",
+											"value": "sivakalaikalai7@gmail.com"
+										},
+										{
+											"key": "subject",
+											"value": "Licence Request"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Status Update",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":\"b72e1838-b13e-4076-9f03-972c8e8bdbc6\",\r\n    \"status\":\"approved\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/api/licence/statusupdate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"licence",
+										"statusupdate"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "APPROVED",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ActiveationDate Update",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":\"b72e1838-b13e-4076-9f03-972c8e8bdbc6\",\r\n    \"activeationDate\":\"15:11\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/licence/activationdateupdate"
+							},
+							"response": []
+						},
+						{
+							"name": "ExpiredStatus Update",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":\"b72e1838-b13e-4076-9f03-972c8e8bdbc6\",\r\n    \"expiredStatus\":\"activeted\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/licence/expiredStatusupdate"
+							},
+							"response": []
+						},
+						{
+							"name": "ExpiredDate Update",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":\"b72e1838-b13e-4076-9f03-972c8e8bdbc6\",\r\n    \"expiryDate\":\"16:23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/licence/expireddateupdate"
+							},
+							"response": []
+						},
+						{
+							"name": "Find By Email",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8081/api/licence/findByemail/info@techinnovations.com"
+							},
+							"response": []
+						},
+						{
+							"name": "Graceperiod Update",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":\"b72e1838-b13e-4076-9f03-972c8e8bdbc6\",\r\n    \"gracePeriod\":\"17:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/licence/graceperiodupdate"
+							},
+							"response": []
+						},
+						{
+							"name": "Send End TO End Mail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/licence/sendencryptdatatoemail/b72e1838-b13e-4076-9f03-972c8e8bdbc6?toemail=prakashprakas2000@gmail.com&subject=Licence Request",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"licence",
+										"sendencryptdatatoemail",
+										"b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+									],
+									"query": [
+										{
+											"key": "toemail",
+											"value": "prakashprakas2000@gmail.com"
+										},
+										{
+											"key": "subject",
+											"value": "Licence Request"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "MainService",
+					"item": [
+						{
+							"name": "Get List of License",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8081/api/licence/getalllicence"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Licence",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8080/api/admin/getalllicence"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Licence by ID in licenceDto",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8080/api/admin/getlicencebyid/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Licence by Id in Rest templet",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8080/api/admin/getlicence/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Encrypt Licence Key",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8080/api/admin/getenencryptlicencekey/b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Encrypt Data",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/admin/getencryptdata/b72e1838-b13e-4076-9f03-972c8e8bdbc6?toemail=sivakalaikalai7@gmail.com&subject=Licence Request",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"admin",
+										"getencryptdata",
+										"b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+									],
+									"query": [
+										{
+											"key": "toemail",
+											"value": "sivakalaikalai7@gmail.com"
+										},
+										{
+											"key": "subject",
+											"value": "Licence Request"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Decrypt The Encrypt Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n    \"encrptData\": \"5nH783VKnkXE2Z6gYkGE6dV24QmTX9hhz+6LpSHNxGbCemoigXufr9Fc0l3pCw/hCEnCRQ/i/fs9gAfdzSxwgmf0UFt1lhsukgDoiN8VdFN0kZhIwaP9G0dilkH7VYcY4xWU0kDpBONWgpY3q4G9az4Gjh+a7KKCa86av7Ni6BL+hxyr47YnlpkMOWEObAe85HHaDLzTPh/6fdWtouSuUldvINX14Li3tOTI9+bv7Shu918vq6E1gu7NXINxGPcl3bmiw==\",\r\n    \"secretKey\": \"WWsIocQw35HImuKL8SoOGKKLP/6nxjXPE+RakbcZrKs=\"\r\n }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8080/api/admin/getdecryptdata"
+							},
+							"response": []
+						},
+						{
+							"name": "Licence Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/admin/licenceupdate?id=b72e1838-b13e-4076-9f03-972c8e8bdbc6&licencekey=4DC40EF4-4BE1-A4F5-D7D4-B057EA8AC843",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"admin",
+										"licenceupdate"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "b72e1838-b13e-4076-9f03-972c8e8bdbc6"
+										},
+										{
+											"key": "licencekey",
+											"value": "4DC40EF4-4BE1-A4F5-D7D4-B057EA8AC843"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "MailSender",
+					"item": [
+						{
+							"name": "Email Send With Attachment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/mail/send?toEmail=hariblockdevil2@gmail.com&subject=Job Requerment&body=Hi Hari this is siva i will saw your application . i impersed to saw your  project details  , and you know man skills ,so . now i will send the Offer letter . you will join at June 3 .Thank you&attachment=Mail.Attachment/SMTP Structure.png",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"mail",
+										"send"
+									],
+									"query": [
+										{
+											"key": "toEmail",
+											"value": "hariblockdevil2@gmail.com"
+										},
+										{
+											"key": "subject",
+											"value": "Job Requerment"
+										},
+										{
+											"key": "body",
+											"value": "Hi Hari this is siva i will saw your application . i impersed to saw your  project details  , and you know man skills ,so . now i will send the Offer letter . you will join at June 3 .Thank you"
+										},
+										{
+											"key": "attachment",
+											"value": "Mail.Attachment/SMTP Structure.png"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Email Send using Simple",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/mail/sendemail?toEmail=priyasekar0137@gmail.com&subject=Territory&body=The world is your territory",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"mail",
+										"sendemail"
+									],
+									"query": [
+										{
+											"key": "toEmail",
+											"value": "priyasekar0137@gmail.com"
+										},
+										{
+											"key": "subject",
+											"value": "Territory"
+										},
+										{
+											"key": "body",
+											"value": "The world is your territory"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Email Send  using",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"subject\" : \"Testing\",\r\n    \"body\":\"This is a mail\",\r\n    \"cc\":\"sivakalaikalai7@gmail.com\",\r\n    \"bcc\":\"hariblockdevil2@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8081/api/mail/send/priyasekar0137@gmail.com"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

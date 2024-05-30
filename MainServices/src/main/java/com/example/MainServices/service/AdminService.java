@@ -219,10 +219,6 @@ public class AdminService {
 
 				ResponseEntity<Status> responseEntity2 = restTemplate.postForEntity(uri, requestEntity, Status.class);
 				Status responseBodyDto = responseEntity2.getBody();
-
-				String serviceUrl2 = licenceBaseUrl + "/expiredStatusupdate";
-				URI expiredStatusupdateuri = UriComponentsBuilder.fromHttpUrl(serviceUrl2).build().toUri();
-				ResponseEntity<LicenceDto> responseEntity3 = restTemplate.postForEntity(expiredStatusupdateuri, requestEntity, LicenceDto.class);
 				
 				map.put("Status", responseBodyDto);
 			}
@@ -260,7 +256,7 @@ public class AdminService {
             LicenceDto dto = LicenceDto.builder().activeationDate(activationDate.toString())
 					.companyAddress(licence.getCompanyAddress()).companyName(licence.getCompanyName())
 					.contactNumber(licence.getContactNumber()).expiredStatus(ExpiredStatus.ACTIVETED)
-					.expiryDate(expiryDate.toString()).graceperiod(expiryDate.toString()).id(licence.getId())
+					.expiryDate(expiryDate.toString()).graceperiod(gracePeriodEndDate.toString()).id(licence.getId())
 					.licenceKey(licence.getLicenceKey()).mailId(licence.getMailId()).status(licence.getStatus())
 					.build();
             
@@ -280,6 +276,10 @@ public class AdminService {
 			URI graceperiodupdate = UriComponentsBuilder.fromHttpUrl(serviceUrl3).build().toUri();
 			ResponseEntity<LicenceDto> responseEntity4 = restTemplate.postForEntity(graceperiodupdate, requestEntity, LicenceDto.class);
 			
+			String serviceUrl4 = licenceBaseUrl + "/expiredStatusupdate";
+			URI expiredStatusupdateuri = UriComponentsBuilder.fromHttpUrl(serviceUrl4).build().toUri();
+			ResponseEntity<LicenceDto> responseEntity5 = restTemplate.postForEntity(expiredStatusupdateuri, requestEntity, LicenceDto.class);
+			
 			return ResponseEntity.ok(dto);
 		} else {
 			return ResponseEntity.badRequest().body("Data miss match please check your data");
@@ -292,9 +292,7 @@ public class AdminService {
 					new TypeReference<Map<String, Object>>() {
 					});
 			return ResponseEntity.status(statusCode).body(errorResponse);
-		}
-		
-		
+		}	
 	}
 
 }
