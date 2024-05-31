@@ -1,5 +1,6 @@
 package com.example.Licence.Management.service;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +12,6 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.parser.Part.IgnoreCaseType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,6 @@ import com.example.Licence.Management.dto.LicenceDto;
 import com.example.Licence.Management.dto.LicenceKeyDto;
 import com.example.Licence.Management.dto.LicenceResponseDto;
 import com.example.Licence.Management.entity.Licence;
-import com.example.Licence.Management.enumuration.ExpiredStatus;
 import com.example.Licence.Management.enumuration.Status;
 import com.example.Licence.Management.repository.LicenceRepository;
 
@@ -187,7 +186,7 @@ public class LicenceService {
 
 			String encryptData = dataResponse.toString();
 
-			emailMessage.simpleMailsend(toemail, subject, encryptData);
+			emailMessage.simpleMailSend(toemail, subject, encryptData);
 
 			response.put("Data", dataResponse);
 			response.put("TimeStamp", new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));
@@ -385,9 +384,21 @@ public class LicenceService {
 			
 			SecretKey encryptkey = secretKeyConfig.convertStringToSecretKey(dataResponse.getSecretKey());
 		    Object decryptDataObj =secretKeyConfig.decryptObject(dataResponse.getEncrptData(), encryptkey);
-		    String decryptData = decryptDataObj.toString();
+//		    String decryptData = decryptDataObj.toString();
+		    
+            DecryptDto decryptedData = (DecryptDto) decryptDataObj;
+            DecryptDto decryptDto = DecryptDto.builder().licenceKey(decryptedData.getLicenceKey())
+            		.mailId(decryptedData.getMailId()).build();
+            
+		    
+		    // Construct the email content
+	        String emailContent = String.format(
+	                "Decrypted Data:\nEmail: %s\nLicense Key: %s",
+	                decryptDto.getMailId(), decryptDto.getLicenceKey()
+	        );
+
 			
-			emailMessage.simpleMailsend(toemail, subject, decryptData);
+			emailMessage.simpleMailSend(toemail, subject, emailContent);
 
 			response.put("Data", dataResponse);
 			response.put("TimeStamp", new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date()));

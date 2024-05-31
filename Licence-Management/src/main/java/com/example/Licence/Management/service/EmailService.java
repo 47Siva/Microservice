@@ -40,7 +40,7 @@ public class EmailService {
 //		mailMessage.setSubject(subject);
 //		
 //		mailSender.send(mailMessage);
-		emailMessage.simpleMailsend(toEmail, subject, body);
+		emailMessage.simpleMailSend(toEmail, subject, body);
 		}
 
 	public void sendMail(String mail, EmailStructure emailStructure) {
@@ -63,19 +63,19 @@ public class EmailService {
 		
 		MimeMessage message = mailSender.createMimeMessage(); 
 		
-		MimeMessageHelper helper = new MimeMessageHelper(message ,true);
+//		MimeMessageHelper helper = new MimeMessageHelper(message ,true);
+//		
+//		helper.setFrom(fromMail);
+//		helper.setTo(toEmail);
+//		helper.setSubject(subject);
+//		helper.setText(body);
+//		
+//		
+//		FileSystemResource fileSystemResource = new FileSystemResource(new File(attachment));
+//		
+//		helper.addAttachment( fileSystemResource.getFilename(), fileSystemResource);
 		
-		helper.setFrom(fromMail);
-		helper.setTo(toEmail);
-		helper.setSubject(subject);
-		helper.setText(body);
-		
-		
-		FileSystemResource fileSystemResource = new FileSystemResource(new File(attachment));
-		
-		helper.addAttachment( fileSystemResource.getFilename(), fileSystemResource);
-		
-		mailSender.send(message );
+		emailMessage.MimeMessageSend(toEmail, subject, body, message, attachment);;
 	}
 	
 	
