@@ -80,10 +80,10 @@ public class AdminService {
 				
 //				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 				
-				LocalDateTime activationDate =  LocalDateTime.now();
+				LocalDate activationDate =  LocalDate.now();
 				
-	            LocalDateTime expiryDate = activationDate.plusYears(1);
-	            LocalDateTime gracePeriodEndDate = expiryDate.plusDays(30);
+	            LocalDate expiryDate = activationDate.plusYears(1);
+	            LocalDate gracePeriodEndDate = expiryDate.plusDays(30);
 				
 				licence.setActiveationDate(activationDate.toString());
 				licence.setExpiryDate(expiryDate.toString());

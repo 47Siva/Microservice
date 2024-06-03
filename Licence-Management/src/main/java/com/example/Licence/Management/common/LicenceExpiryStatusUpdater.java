@@ -1,5 +1,6 @@
 package com.example.Licence.Management.common;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -25,12 +26,12 @@ public class LicenceExpiryStatusUpdater {
 
 	// Run every 24 hours (86400000 milliseconds)
 	// Run every 1 second (1000 milliseconds)
-	// Run every 1 minutes (1000 milliseconds)
+	// Run every 1 minutes (60,000 milliseconds)
 
 	@Scheduled(fixedRate = 86400000) // Schedule to run every 24 hours (1 day)
 	public void updateExpiredStatus() {
 		List<Licence> licences = licenceRepository.findAll();
-		LocalDateTime now = LocalDateTime.now();
+		LocalDate now = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 		List<Licence> updatedLicences = new ArrayList<>();
@@ -39,11 +40,11 @@ public class LicenceExpiryStatusUpdater {
 			if (licence.getExpiryDate() != null && !licence.getExpiryDate().isEmpty()
 					&& licence.getGracePeriod() != null && !licence.getGracePeriod().isEmpty()) {
 
-				LocalDateTime expiryDate;
-				LocalDateTime gracePeriodEndDate;
+				LocalDate expiryDate;
+				LocalDate gracePeriodEndDate;
 				try {
-					expiryDate = LocalDateTime.parse(licence.getExpiryDate(), formatter);
-					gracePeriodEndDate = LocalDateTime.parse(licence.getGracePeriod(), formatter);
+					expiryDate = LocalDate.parse(licence.getExpiryDate(), formatter);
+					gracePeriodEndDate = LocalDate.parse(licence.getGracePeriod(), formatter);
 				} catch (DateTimeParseException e) {
 					// Log the error and skip this licence
 					System.err.println("Error parsing dates for licence ID " + licence.getId() + ": " + e.getMessage());
