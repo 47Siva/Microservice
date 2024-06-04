@@ -1,5 +1,7 @@
 package com.example.Licence.Management.dto;
 
+import com.example.Licence.Management.entity.Otp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
