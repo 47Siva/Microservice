@@ -1,7 +1,5 @@
 package com.example.Licence.Management.entity;
 
-import java.time.LocalTime;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,22 +8,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Entity
 @Data
-@Builder
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Otp {
+@ToString
+@Builder
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id ;
+	private int id;
 	
-	private String otpCode;
+	private String usrerName;
 	
-	private LocalTime expiryTime;
-
-    private String email; 
-    
+	private String email;
+	
+	private String password;
 }

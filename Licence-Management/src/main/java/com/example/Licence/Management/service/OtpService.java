@@ -1,7 +1,6 @@
 package com.example.Licence.Management.service;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -10,10 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.Licence.Management.common.PasswordUtil;
+import com.example.Licence.Management.dto.OtpRequest;
 import com.example.Licence.Management.dto.OtpResponse;
+import com.example.Licence.Management.dto.ResetPasswordRequest;
 import com.example.Licence.Management.dto.ValidateOtpRequest;
 import com.example.Licence.Management.entity.Otp;
+import com.example.Licence.Management.entity.User;
 import com.example.Licence.Management.repository.OtpRepository;
+import com.example.Licence.Management.repository.UserRepository;
 
 @Service
 public class OtpService {
@@ -22,19 +26,22 @@ public class OtpService {
 	OtpRepository otpRepository;
 	
 	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
 	private SendSimpleEmailMessage sendSimpleEmailMessage;
-
+	
 	private final SecureRandom secureRandom = new SecureRandom();
 
 	public int generateOtp() {
 		return 100000 + secureRandom.nextInt(900000); // Generate a 6-digit OTP
 	}
 
-	public ResponseEntity<?> sendOtp( String email) {
+	public ResponseEntity<?> sendOtp( OtpRequest request) {
 		try {
 	        int otpCode = generateOtp();
 			LocalTime expiryTime =  LocalTime.now().plusMinutes(1);
-			 Optional<Otp> findbyemail = otpRepository.findByEmail(email);
+			 Optional<Otp> findbyemail = otpRepository.findByEmail(request.getEmail());
 			 if (findbyemail.isPresent()) {
 		        	Otp OTP = findbyemail.get();
 		        	OTP.setOtpCode(String.valueOf(otpCode));
@@ -42,19 +49,26 @@ public class OtpService {
 		        	otpRepository.save(OTP);
 		        }else {
 			  Otp otp = Otp.builder()
-					  .email(email)
+					  .email(request.getEmail())
 					  .expiryTime(expiryTime)
 					  .otpCode(String.valueOf(otpCode)).build();
 		        otpRepository.save(otp);
+		        
+		        User user = User.builder()
+		        		.email(request.getEmail())
+		        		.password(PasswordUtil.getEncryptedPassword(request.getPassword()))
+		        		.usrerName(request.getUserName())
+		        		.build();
+		        userRepository.save(user);
 		        }
 			String subject = "Your OTP Code";
 			String body = "Your OTP is: " + otpCode;
-			sendSimpleEmailMessage.simpleMailSend(email,subject,body);
+			sendSimpleEmailMessage.simpleMailSend(request.getEmail(),subject,body);
 		
 			OtpResponse response = OtpResponse.builder().message("OTP sent successfully").otp(otpCode).build();
 			return ResponseEntity.ok(response);
 		} catch (RuntimeException e) {
-			throw new RuntimeException("Failed to send OTP..! Please Enter a Valid Email");
+			throw new RuntimeException("Failed to send OTP..! TryAgin Later");
 		}
 	}
     
@@ -75,6 +89,11 @@ public class OtpService {
              return ResponseEntity.badRequest().body("Incorrect OTP.");
          }
     }
+
+	public ResponseEntity<?> resetPassword(ResetPasswordRequest request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
     
 }
