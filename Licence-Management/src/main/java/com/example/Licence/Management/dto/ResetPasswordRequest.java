@@ -7,7 +7,9 @@ import lombok.Data;
 @Builder
 public class ResetPasswordRequest {
 
-	private String newpassword;
-	
-	private String email;
+	   private String step;
+	    private String email;
+	    private String userName;
+	    private int otp;
+	    private String newPassword;
 }
